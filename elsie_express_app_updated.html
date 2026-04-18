@@ -1,0 +1,1355 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #2E7D4F;
+    --green-light: #E8F5EE;
+    --green-mid: #4A9E6A;
+    --midnight: #1A2E44;
+    --sand: #F5EFE6;
+    --offwhite: #FAFAF8;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --text: #1A1A1A;
+    --muted: #6B7280;
+    --amber: #F59E0B;
+    --amber-light: #FEF3C7;
+    --amber-text: #B45309;
+    --red: #E53E3E;
+    --red-light: #FEE2E2;
+    --red-text: #B91C1C;
+    --verified: #27AE60;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06);
+    --radius: 14px;
+    --radius-sm: 10px;
+    --logo-url: url('/Users/oscartrapp/Downloads/Elsie_Logo_RVB.png');
+  }
+
+  body { font-family: 'DM Sans', sans-serif; background: #ECEAE4; display: flex; justify-content: center; align-items: flex-start; padding: 32px 16px; min-height: 100vh; }
+
+  .phone-wrap { position: relative; }
+
+  .phone {
+    width: 390px;
+    min-height: 780px;
+    background: var(--sand);
+    border-radius: 40px;
+    overflow: hidden;
+    border: 2px solid #D4CFC7;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .screen { display: none; flex-direction: column; height: 100%; min-height: 780px; }
+  .screen.active { display: flex; }
+
+  .status-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 24px 0;
+    font-size: 12px; font-weight: 500; color: var(--midnight);
+  }
+
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 20px 8px;
+  }
+
+  .logo { display: flex; align-items: center; gap: 7px; }
+  .logo-mark {
+    width: 30px; height: 30px; background: var(--green);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  }
+  .logo-mark svg { width: 18px; height: 18px; fill: white; }
+  .logo-text { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--midnight); letter-spacing: -0.3px; }
+
+  .icon-btn {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--card);
+    border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .icon-btn:hover { background: var(--green-light); }
+  .icon-btn svg { width: 18px; height: 18px; stroke: var(--midnight); fill: none; stroke-width: 1.7; }
+
+  .content { flex: 1; overflow-y: auto; padding: 8px 20px 24px; }
+  .content::-webkit-scrollbar { display: none; }
+
+  .page-title { font-size: 24px; font-weight: 600; color: var(--midnight); margin-bottom: 4px; line-height: 1.2; }
+  .page-sub { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    border: 1px solid var(--border); padding: 16px;
+    box-shadow: var(--shadow); margin-bottom: 12px;
+  }
+
+  .card-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); margin-bottom: 10px; }
+
+  .upload-zone {
+    background: var(--offwhite); border: 2px dashed #C8D5CC;
+    border-radius: var(--radius); padding: 36px 20px;
+    text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 12px;
+  }
+  .upload-zone:hover { border-color: var(--green); background: var(--green-light); }
+  .upload-zone.has-file { border-style: solid; border-color: var(--green); background: var(--green-light); }
+  .upload-icon { width: 48px; height: 48px; background: var(--green-light); border-radius: 12px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; }
+  .upload-icon svg { width: 26px; height: 26px; stroke: var(--green); fill: none; stroke-width: 1.7; }
+  .upload-title { font-size: 15px; font-weight: 500; color: var(--midnight); margin-bottom: 4px; }
+  .upload-sub { font-size: 13px; color: var(--muted); }
+
+  .btn-row { display: flex; gap: 10px; margin-bottom: 12px; }
+  .btn-sec {
+    flex: 1; padding: 12px 10px; border: 1.5px solid var(--green); border-radius: var(--radius-sm);
+    background: white; color: var(--green); font-size: 14px; font-weight: 500;
+    font-family: 'DM Sans', sans-serif; cursor: pointer; display: flex; align-items: center;
+    justify-content: center; gap: 7px; transition: all 0.15s;
+  }
+  .btn-sec:hover { background: var(--green-light); }
+  .btn-sec svg { width: 16px; height: 16px; stroke: var(--green); fill: none; stroke-width: 1.8; }
+
+  .urgent-toggle {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--card); border-radius: var(--radius-sm);
+    border: 1px solid var(--border); padding: 12px 16px; margin-bottom: 12px; cursor: pointer;
+  }
+  .urgent-toggle.active { border-color: var(--red); background: var(--red-light); }
+  .urgent-left { display: flex; align-items: center; gap: 9px; }
+  .urgent-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
+  .urgent-toggle.active .urgent-dot { background: var(--red); }
+  .urgent-label { font-size: 14px; font-weight: 500; color: var(--midnight); }
+  .urgent-toggle.active .urgent-label { color: var(--red-text); }
+  .toggle-pill {
+    width: 44px; height: 24px; border-radius: 12px; background: #D1D5DB;
+    position: relative; transition: background 0.2s;
+  }
+  .urgent-toggle.active .toggle-pill { background: var(--red); }
+  .toggle-pill::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 20px; height: 20px; border-radius: 50%; background: white;
+    transition: transform 0.2s;
+  }
+  .urgent-toggle.active .toggle-pill::after { transform: translateX(20px); }
+
+  .info-card {
+    background: var(--green-light); border-radius: var(--radius-sm);
+    border: 1px solid #C8DDD0; padding: 12px 14px; margin-bottom: 12px;
+    display: flex; align-items: flex-start; gap: 9px;
+  }
+  .info-card svg { width: 16px; height: 16px; stroke: var(--green); fill: none; stroke-width: 1.8; flex-shrink: 0; margin-top: 1px; }
+  .info-card span { font-size: 13px; color: #2D6A44; line-height: 1.5; }
+
+  .btn-primary {
+    width: 100%; padding: 15px; border-radius: var(--radius-sm);
+    background: var(--green); color: white; font-size: 15px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.15s; margin-top: 4px;
+  }
+  .btn-primary:hover { background: #256040; }
+  .btn-primary:disabled { background: #C4C4C4; cursor: not-allowed; }
+  .btn-primary svg { width: 18px; height: 18px; stroke: white; fill: none; stroke-width: 2; }
+
+  .back-btn {
+    display: flex; align-items: center; gap: 6px; background: none; border: none;
+    color: var(--green); font-size: 14px; font-weight: 500; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; padding: 0; margin-bottom: 16px;
+  }
+  .back-btn svg { width: 16px; height: 16px; stroke: var(--green); fill: none; stroke-width: 2; }
+
+  .med-card {
+    background: var(--offwhite); border-radius: var(--radius-sm);
+    border: 1px solid var(--border); padding: 12px 14px; margin-bottom: 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .med-info .med-name { font-size: 14px; font-weight: 500; color: var(--midnight); }
+  .med-info .med-detail { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .med-icon { width: 34px; height: 34px; border-radius: 8px; background: var(--green-light); display: flex; align-items: center; justify-content: center; margin-right: 10px; }
+  .med-icon svg { width: 18px; height: 18px; stroke: var(--green); fill: none; stroke-width: 1.7; }
+  .med-left { display: flex; align-items: center; }
+
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; white-space: nowrap;
+  }
+  .badge-green { background: var(--green-light); color: var(--green); }
+  .badge-amber { background: var(--amber-light); color: var(--amber-text); }
+  .badge-red { background: var(--red-light); color: var(--red-text); }
+  .badge-blue { background: #EFF6FF; color: #1D4ED8; }
+
+  .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-key { font-size: 13px; color: var(--muted); }
+  .detail-val { font-size: 13px; font-weight: 500; color: var(--midnight); }
+
+  .edit-link { font-size: 12px; color: var(--green); font-weight: 500; cursor: pointer; text-decoration: underline; }
+
+  .stepper { display: flex; flex-direction: column; gap: 0; }
+  .step-item { display: flex; align-items: flex-start; gap: 12px; }
+  .step-line-wrap { display: flex; flex-direction: column; align-items: center; }
+  .step-circle {
+    width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0;
+    border: 2px solid var(--border); background: var(--offwhite); color: var(--muted);
+  }
+  .step-circle.done { background: var(--green); border-color: var(--green); color: white; }
+  .step-circle.active { background: white; border-color: var(--green); color: var(--green); }
+  .step-vline { width: 2px; height: 24px; background: var(--border); margin: 3px 0; }
+  .step-vline.done { background: var(--green); }
+  .step-text { padding-top: 4px; }
+  .step-text .step-label { font-size: 13px; font-weight: 500; color: var(--midnight); }
+  .step-text .step-sub { font-size: 12px; color: var(--muted); }
+
+  .pickup-cards { display: flex; gap: 10px; margin-bottom: 14px; }
+  .pickup-card {
+    flex: 1; background: var(--card); border: 1.5px solid var(--border);
+    border-radius: var(--radius); padding: 14px 12px; cursor: pointer; text-align: center;
+    transition: all 0.2s;
+  }
+  .pickup-card:hover { border-color: var(--green); background: var(--green-light); }
+  .pickup-card.selected { border-color: var(--green); background: var(--green-light); }
+  .pickup-card .pc-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--sand); margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; }
+  .pickup-card.selected .pc-icon { background: white; }
+  .pickup-card .pc-icon svg { width: 24px; height: 24px; stroke: var(--midnight); fill: none; stroke-width: 1.7; }
+  .pickup-card.selected .pc-icon svg { stroke: var(--green); }
+  .pickup-card .pc-name { font-size: 13px; font-weight: 600; color: var(--midnight); margin-bottom: 2px; }
+  .pickup-card .pc-sub { font-size: 11px; color: var(--muted); }
+
+  .qr-card {
+    background: var(--midnight); border-radius: var(--radius);
+    padding: 20px; text-align: center; margin-bottom: 12px; position: relative; overflow: hidden;
+  }
+  .qr-card::before {
+    content: ''; position: absolute; top: -30px; right: -30px;
+    width: 120px; height: 120px; border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  .qr-title { font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
+  .qr-box {
+    width: 130px; height: 130px; background: white; border-radius: 12px;
+    margin: 0 auto 14px; display: flex; align-items: center; justify-content: center;
+    padding: 10px;
+  }
+  .qr-num { font-family: 'DM Serif Display', serif; font-size: 28px; color: white; margin-bottom: 4px; }
+  .qr-pharmacy { font-size: 12px; color: rgba(255,255,255,0.6); margin-bottom: 10px; }
+  .qr-ready { display: inline-flex; align-items: center; gap: 5px; background: rgba(46,125,79,0.3); border: 1px solid rgba(46,125,79,0.5); border-radius: 20px; padding: 4px 12px; }
+  .qr-ready-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ADE80; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .qr-ready-text { font-size: 12px; font-weight: 600; color: #4ADE80; }
+
+  .action-btns { display: flex; gap: 8px; margin-bottom: 12px; }
+  .action-btn {
+    flex: 1; padding: 11px 8px; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border); background: var(--card);
+    font-size: 12px; font-weight: 500; color: var(--midnight);
+    font-family: 'DM Sans', sans-serif; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 5px; transition: all 0.15s;
+  }
+  .action-btn:hover { border-color: var(--green); background: var(--green-light); }
+  .action-btn svg { width: 18px; height: 18px; stroke: var(--green); fill: none; stroke-width: 1.7; }
+
+  .section-title {
+    font-size: 13px; font-weight: 600; color: var(--midnight);
+    margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .profile-avatar {
+    width: 64px; height: 64px; border-radius: 50%; background: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif; font-size: 22px; color: white; margin-bottom: 8px;
+  }
+
+  .field-group { margin-bottom: 14px; }
+  .field-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 5px; }
+  .field-input {
+    width: 100%; padding: 10px 12px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border); background: var(--offwhite);
+    font-size: 14px; font-family: 'DM Sans', sans-serif; color: var(--midnight);
+    outline: none; transition: border 0.15s;
+  }
+  .field-input:focus { border-color: var(--green); background: white; }
+
+  .tp-status {
+    display: flex; align-items: center; gap: 10px; background: var(--green-light);
+    border: 1px solid #C8DDD0; border-radius: var(--radius-sm); padding: 12px 14px; margin-top: 8px;
+  }
+  .tp-status svg { width: 20px; height: 20px; stroke: var(--green); fill: none; stroke-width: 2; flex-shrink: 0; }
+  .tp-status .tp-text .tp-label { font-size: 13px; font-weight: 600; color: var(--green); }
+  .tp-status .tp-text .tp-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+
+  .nav-bar {
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 10px 0 20px; background: var(--card); border-top: 1px solid var(--border);
+  }
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
+  .nav-item svg { width: 22px; height: 22px; stroke: var(--muted); fill: none; stroke-width: 1.7; }
+  .nav-item.active svg { stroke: var(--green); }
+  .nav-item span { font-size: 10px; color: var(--muted); }
+  .nav-item.active span { color: var(--green); font-weight: 600; }
+
+  .success-banner {
+    background: var(--green); border-radius: var(--radius); padding: 14px 16px;
+    display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+  }
+  .success-banner svg { width: 22px; height: 22px; stroke: white; fill: none; stroke-width: 2; flex-shrink: 0; }
+  .success-banner .sb-text .sb-title { font-size: 14px; font-weight: 600; color: white; }
+  .success-banner .sb-text .sb-sub { font-size: 12px; color: rgba(255,255,255,0.75); margin-top: 1px; }
+
+  .screen-anim { animation: fadeSlide 0.22s ease; }
+  @keyframes fadeSlide { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: translateX(0); } }
+
+  .file-preview { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+  .file-preview svg { width: 20px; height: 20px; stroke: var(--green); fill: none; stroke-width: 1.7; }
+  .file-preview .fp-name { font-size: 13px; font-weight: 500; color: var(--midnight); }
+  .file-preview .fp-size { font-size: 11px; color: var(--muted); }
+
+  .step-progress {
+    padding: 8px 20px 12px;
+    background: linear-gradient(180deg, rgba(245,239,230,0.98) 0%, rgba(245,239,230,0.94) 100%);
+    border-bottom: 1px solid rgba(229,231,235,0.85);
+    flex-shrink: 0;
+  }
+  .step-progress-track {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: start;
+    gap: 0;
+  }
+  .step-progress-line {
+    height: 3px;
+    border-radius: 999px;
+    background: var(--border);
+    min-width: 22px;
+    margin: 0 -4px;
+    margin-top: 14px;
+  }
+  .step-progress-line.done { background: var(--green); }
+  .step-progress-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 72px;
+  }
+  .step-progress-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--border);
+    background: rgba(255,255,255,0.72);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .step-progress-node.done .step-progress-circle {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+  }
+  .step-progress-node.active .step-progress-circle {
+    border-color: var(--green);
+    color: var(--green);
+    background: white;
+  }
+  .step-progress-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.2;
+  }
+  .step-progress-node.done .step-progress-label,
+  .step-progress-node.active .step-progress-label { color: var(--midnight); }
+
+  /* Logo banner at top of every screen */
+  .logo-banner {
+    padding: 12px 20px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .logo-banner img {
+    width: 150px;
+    height: auto;
+    display: block;
+  }
+
+  .location-picker { position: relative; }
+  .location-trigger {
+    width: 100%; padding: 12px 14px; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--green); background: var(--offwhite); cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    text-align: left; transition: background 0.15s, border-color 0.15s;
+  }
+  .location-trigger:hover,
+  .location-trigger.open { background: white; }
+  .location-trigger-main { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .location-trigger-icon {
+    width: 36px; height: 36px; border-radius: 12px; background: var(--green-light);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .location-trigger-icon svg { width: 18px; height: 18px; stroke: var(--green); fill: none; stroke-width: 2; }
+  .location-trigger-copy { min-width: 0; }
+  .location-trigger-label { font-size: 14px; font-weight: 600; color: var(--midnight); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .location-trigger-sub { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .location-trigger-arrow svg { width: 18px; height: 18px; stroke: var(--green); fill: none; stroke-width: 2; transition: transform 0.2s; }
+  .location-trigger.open .location-trigger-arrow svg { transform: rotate(180deg); }
+  .location-panel {
+    margin-top: 10px; border: 1px solid var(--border); border-radius: var(--radius);
+    background: white; box-shadow: var(--shadow); padding: 12px; display: none;
+  }
+  .location-panel.open { display: block; }
+  .location-search {
+    width: 100%; padding: 11px 12px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border); background: var(--offwhite); outline: none;
+    font-size: 14px; color: var(--midnight); margin-bottom: 10px;
+  }
+  .location-search:focus { border-color: var(--green); background: white; }
+  .location-panel-meta {
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    margin-bottom: 10px;
+  }
+  .location-panel-meta span { font-size: 12px; color: var(--muted); }
+  .location-chip {
+    font-size: 11px; font-weight: 600; color: var(--green);
+    background: var(--green-light); border-radius: 999px; padding: 4px 8px;
+  }
+  .location-list {
+    max-height: 220px; overflow: auto; display: flex; flex-direction: column; gap: 8px;
+    padding-right: 2px; margin-bottom: 12px;
+  }
+  .location-option {
+    width: 100%; border: 1px solid var(--border); background: var(--card);
+    border-radius: 12px; padding: 10px 12px; display: flex; align-items: center; gap: 10px;
+    cursor: pointer; text-align: left; transition: background 0.15s, border-color 0.15s;
+  }
+  .location-option:hover,
+  .location-option.selected { border-color: var(--green); background: var(--green-light); }
+  .location-option-pin {
+    width: 30px; height: 30px; border-radius: 50%; background: var(--sand);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .location-option-pin svg { width: 14px; height: 14px; stroke: var(--green); fill: none; stroke-width: 2; }
+  .location-option-copy { min-width: 0; }
+  .location-option-name { font-size: 13px; font-weight: 600; color: var(--midnight); }
+  .location-option-sub { font-size: 12px; color: var(--muted); }
+  .location-empty {
+    font-size: 13px; color: var(--muted); text-align: center;
+    padding: 18px 10px; border: 1px dashed var(--border); border-radius: 12px;
+  }
+
+  /* Directions button */
+  .btn-directions {
+    width: 100%; padding: 14px; border-radius: var(--radius-sm);
+    background: var(--midnight); color: white; font-size: 15px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 9px;
+    transition: background 0.15s; margin-bottom: 10px;
+  }
+  .btn-directions:hover { background: #0F1E2E; }
+  .btn-directions svg { width: 18px; height: 18px; stroke: white; fill: none; stroke-width: 2; }
+
+  /* Apple Wallet button */
+  .btn-wallet {
+    width: 100%; padding: 14px; border-radius: var(--radius-sm);
+    background: #000; color: white; font-size: 15px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 9px;
+    transition: background 0.15s; margin-bottom: 10px;
+  }
+  .btn-wallet:hover { background: #222; }
+  .btn-wallet-logo {
+    display: flex; align-items: center; gap: 5px;
+  }
+  .wallet-apple-icon { width: 18px; height: 18px; fill: white; flex-shrink: 0; }
+
+  .map-placeholder {
+    width: 100%; height: 90px; background: #E8EFE8; border-radius: var(--radius-sm);
+    margin-top: 8px; position: relative; overflow: hidden; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .map-placeholder .map-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(46,125,79,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(46,125,79,0.08) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  .map-pin { position: absolute; }
+  .map-pin-circle { width: 24px; height: 24px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; }
+  .map-pin-circle svg { width: 14px; height: 14px; stroke: white; fill: none; stroke-width: 2; }
+  .map-label { background: white; border-radius: 6px; padding: 3px 7px; font-size: 11px; font-weight: 600; color: var(--midnight); position: absolute; top: 28px; left: -30px; white-space: nowrap; border: 1px solid var(--border); }
+  .map-caption {
+    position: absolute; left: 12px; bottom: 10px; background: rgba(255,255,255,0.92);
+    border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px;
+  }
+  .map-caption-title { font-size: 11px; font-weight: 600; color: var(--midnight); }
+  .map-caption-sub { font-size: 10px; color: var(--muted); }
+  .pickup-location-card { margin-bottom: 12px; }
+  .pickup-location-top {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px;
+  }
+  .pickup-location-name { font-size: 15px; font-weight: 600; color: var(--midnight); }
+  .pickup-location-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .pickup-location-link {
+    border: none; background: none; color: var(--green); font-size: 12px; font-weight: 600; cursor: pointer;
+  }
+  .toast {
+    position: absolute; left: 20px; right: 20px; bottom: 86px; background: var(--midnight); color: white;
+    border-radius: 12px; padding: 12px 14px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.18); z-index: 20;
+  }
+  .toast.show { display: block; }
+  .toast-title { font-size: 13px; font-weight: 600; }
+  .toast-sub { font-size: 12px; color: rgba(255,255,255,0.72); margin-top: 2px; }
+  .wallet-overlay {
+    position: absolute; inset: 0; background: rgba(12, 20, 31, 0.52); display: none;
+    align-items: flex-end; justify-content: center; padding: 16px; z-index: 30;
+  }
+  .wallet-overlay.open { display: flex; }
+  .wallet-sheet {
+    width: 100%; background: #111; color: white; border-radius: 24px; padding: 14px 14px 18px;
+    box-shadow: 0 18px 60px rgba(0,0,0,0.28);
+  }
+  .wallet-handle {
+    width: 42px; height: 5px; border-radius: 999px; background: rgba(255,255,255,0.2); margin: 0 auto 12px;
+  }
+  .wallet-title { font-size: 18px; font-weight: 600; text-align: center; margin-bottom: 14px; }
+  .wallet-pass {
+    background: linear-gradient(135deg, #244d36 0%, #2E7D4F 55%, #4A9E6A 100%);
+    border-radius: 20px; padding: 18px; margin-bottom: 14px; position: relative; overflow: hidden;
+  }
+  .wallet-pass::after {
+    content: ''; position: absolute; width: 180px; height: 180px; border-radius: 50%;
+    right: -60px; top: -70px; background: rgba(255,255,255,0.09);
+  }
+  .wallet-pass-logo {
+    width: 120px; height: 28px; background-image: var(--logo-url);
+    background-size: contain; background-repeat: no-repeat; background-position: left center; margin-bottom: 24px;
+    filter: brightness(0) invert(1);
+  }
+  .wallet-pass-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.9px; opacity: 0.7; margin-bottom: 5px; }
+  .wallet-pass-value { font-size: 20px; font-weight: 600; margin-bottom: 12px; }
+  .wallet-pass-meta { font-size: 13px; opacity: 0.82; line-height: 1.45; }
+  .wallet-actions { display: flex; flex-direction: column; gap: 8px; }
+  .wallet-action {
+    width: 100%; padding: 14px; border-radius: 14px; border: none; cursor: pointer;
+    font-size: 15px; font-weight: 600; font-family: 'DM Sans', sans-serif;
+  }
+  .wallet-action.primary { background: white; color: #111; }
+  .wallet-action.secondary { background: rgba(255,255,255,0.08); color: white; }
+</style>
+
+<div class="phone-wrap">
+  <div class="phone">
+
+    <!-- SCREEN 1: UPLOAD -->
+    <div class="screen active screen-anim" id="screen-upload">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span style="display:flex;gap:5px;align-items:center;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="7" width="4" height="17" rx="1"/><rect x="7" y="4" width="4" height="20" rx="1" opacity=".7"/><rect x="13" y="1" width="4" height="23" rx="1" opacity=".4"/></svg>
+          <svg width="16" height="14" viewBox="0 0 24 18" fill="currentColor"><path d="M12 0C5.4 0 0 4 0 9s5.4 9 12 9 12-4 12-9S18.6 0 12 0zm0 14c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-7a2 2 0 100 4 2 2 0 000-4z" opacity=".5"/><path d="M12 4a5 5 0 100 10A5 5 0 0012 4zm0 7a2 2 0 110-4 2 2 0 010 4z"/></svg>
+          <svg width="24" height="12" viewBox="0 0 24 12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2" stroke="currentColor" stroke-width="1" fill="none"/><rect x="1.5" y="2.5" width="16" height="7" rx="1.5"/><path d="M22 4v4a2 2 0 000-4z"/></svg>
+        </span>
+      </div>
+      <div class="logo-banner">
+        <img src="/Users/oscartrapp/Downloads/Elsie_Logo_RVB.png" alt="Elsie Santé">
+      </div>
+      <div class="step-progress">
+        <div class="step-progress-track">
+          <div class="step-progress-node active">
+            <div class="step-progress-circle">1</div>
+            <div class="step-progress-label">Upload</div>
+          </div>
+          <div class="step-progress-line"></div>
+          <div class="step-progress-node">
+            <div class="step-progress-circle">2</div>
+            <div class="step-progress-label">Review</div>
+          </div>
+          <div class="step-progress-line"></div>
+          <div class="step-progress-node">
+            <div class="step-progress-circle">3</div>
+            <div class="step-progress-label">Pickup</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="page-title">Upload your<br>prescription</div>
+        <div class="page-sub">Get your medication ready before you arrive</div>
+
+        <div class="upload-zone" id="upload-zone" onclick="simulateUpload()">
+          <div class="upload-icon">
+            <svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <div class="upload-title" id="upload-title">Scan or upload prescription</div>
+          <div class="upload-sub" id="upload-sub">Tap to take a photo or choose from your files</div>
+        </div>
+
+        <div id="file-preview-wrap" style="display:none;" class="card">
+          <div class="file-preview">
+            <svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <div>
+              <div class="fp-name">ordonnance_doc_31.pdf</div>
+              <div class="fp-size">248 KB · Uploaded</div>
+            </div>
+            <div style="margin-left:auto;"><span class="badge badge-green">Ready</span></div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-sec" onclick="simulateUpload()">
+            <svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3"/></svg>
+            Scan
+          </button>
+          <button class="btn-sec" onclick="simulateUpload()">
+            <svg viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            Upload
+          </button>
+        </div>
+
+        <div class="urgent-toggle" id="urgent-toggle" onclick="toggleUrgent()">
+          <div class="urgent-left">
+            <div class="urgent-dot"></div>
+            <span class="urgent-label">Urgent request</span>
+          </div>
+          <div class="toggle-pill"></div>
+        </div>
+
+        <div class="info-card">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>
+          <span>We'll pre-check your prescription and prepare your pickup before you arrive at the pharmacy.</span>
+        </div>
+
+        <button class="btn-primary" id="continue-btn" onclick="goTo('screen-review')" disabled>
+          Continue
+          <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-item active">
+          <svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="goTo('screen-profile')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span>Profile</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: REVIEW -->
+    <div class="screen" id="screen-review">
+      <div class="status-bar">
+        <span>9:43</span>
+        <span style="display:flex;gap:5px;align-items:center;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="7" width="4" height="17" rx="1"/><rect x="7" y="4" width="4" height="20" rx="1" opacity=".7"/><rect x="13" y="1" width="4" height="23" rx="1" opacity=".4"/></svg>
+          <svg width="24" height="12" viewBox="0 0 24 12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2" stroke="currentColor" stroke-width="1" fill="none"/><rect x="1.5" y="2.5" width="16" height="7" rx="1.5"/><path d="M22 4v4a2 2 0 000-4z"/></svg>
+        </span>
+      </div>
+      <div class="logo-banner">
+        <img src="/Users/oscartrapp/Downloads/Elsie_Logo_RVB.png" alt="Elsie Santé">
+      </div>
+      <div class="step-progress">
+        <div class="step-progress-track">
+          <div class="step-progress-node done">
+            <div class="step-progress-circle">1</div>
+            <div class="step-progress-label">Upload</div>
+          </div>
+          <div class="step-progress-line done"></div>
+          <div class="step-progress-node active">
+            <div class="step-progress-circle">2</div>
+            <div class="step-progress-label">Review</div>
+          </div>
+          <div class="step-progress-line"></div>
+          <div class="step-progress-node">
+            <div class="step-progress-circle">3</div>
+            <div class="step-progress-label">Pickup</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <button class="back-btn" onclick="goTo('screen-upload')">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          Back
+        </button>
+        <div class="page-title">Review your request</div>
+        <div class="page-sub">Confirm everything before we prepare your pickup</div>
+
+        <div class="card">
+          <div class="card-label">Prescription summary</div>
+          <div class="med-card">
+            <div class="med-left">
+              <div class="med-icon"><svg viewBox="0 0 24 24"><path d="M19.5 3.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2 7.5 3.5 6 2v14a4 4 0 004 4h4a4 4 0 004-4V2l-1.5 1.5zM16 16H8v-2h8v2zm0-4H8v-2h8v2z"/></svg></div>
+              <div class="med-info">
+                <div class="med-name">Amoxicillin 500mg</div>
+                <div class="med-detail">Qty: 21 capsules · 7-day course</div>
+              </div>
+            </div>
+            <span class="badge badge-green">Available</span>
+          </div>
+          <div class="med-card">
+            <div class="med-left">
+              <div class="med-icon"><svg viewBox="0 0 24 24"><path d="M19.5 3.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2 7.5 3.5 6 2v14a4 4 0 004 4h4a4 4 0 004-4V2l-1.5 1.5zM16 16H8v-2h8v2zm0-4H8v-2h8v2z"/></svg></div>
+              <div class="med-info">
+                <div class="med-name">Doliprane 1000mg</div>
+                <div class="med-detail">Qty: 8 tablets · As needed</div>
+              </div>
+            </div>
+            <span class="badge badge-green">Available</span>
+          </div>
+          <div class="med-card">
+            <div class="med-left">
+              <div class="med-icon"><svg viewBox="0 0 24 24"><path d="M19.5 3.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2 7.5 3.5 6 2v14a4 4 0 004 4h4a4 4 0 004-4V2l-1.5 1.5zM16 16H8v-2h8v2zm0-4H8v-2h8v2z"/></svg></div>
+              <div class="med-info">
+                <div class="med-name">Ibuprofène 400mg</div>
+                <div class="med-detail">Qty: 14 tablets · With food</div>
+              </div>
+            </div>
+            <span class="badge badge-amber">Checking</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">
+            Your details
+            <span class="edit-link" onclick="goTo('screen-profile')">Edit</span>
+          </div>
+          <div class="detail-row"><span class="detail-key">Name</span><span class="detail-val">Sophie Martin</span></div>
+          <div class="detail-row"><span class="detail-key">Date of birth</span><span class="detail-val">14 Mar 1990</span></div>
+          <div class="detail-row"><span class="detail-key">Member ID</span><span class="detail-val">ES-2847361</span></div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">
+            Coverage & insurance
+            <span class="badge badge-green">Tiers Payant ✓</span>
+          </div>
+          <div class="detail-row"><span class="detail-key">Séc. Sociale</span><span class="detail-val">Verified</span></div>
+          <div class="detail-row"><span class="detail-key">Mutuelle</span><span class="detail-val">Alan</span></div>
+          <div class="detail-row"><span class="detail-key">Coverage</span><span class="detail-val">100% covered</span></div>
+          <div class="detail-row"><span class="detail-key">Upfront payment</span><span class="detail-val" style="color:var(--verified);">€0.00</span></div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Processing status</div>
+          <div class="stepper">
+            <div class="step-item">
+              <div class="step-line-wrap">
+                <div class="step-circle done">✓</div>
+                <div class="step-vline done"></div>
+              </div>
+              <div class="step-text">
+                <div class="step-label">Prescription uploaded</div>
+                <div class="step-sub">ordonnance_doc_31.pdf</div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-line-wrap">
+                <div class="step-circle active">⟳</div>
+                <div class="step-vline"></div>
+              </div>
+              <div class="step-text">
+                <div class="step-label">Coverage being checked</div>
+                <div class="step-sub">Verifying with Alan mutuelle</div>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-line-wrap">
+                <div class="step-circle">3</div>
+              </div>
+              <div class="step-text">
+                <div class="step-label">Pharmacy preparing pickup</div>
+                <div class="step-sub">Awaiting confirmation</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Choose pickup pharmacy</div>
+          <div class="location-picker">
+            <button class="location-trigger" id="location-trigger" onclick="togglePharmacyPicker()">
+              <div class="location-trigger-main">
+                <div class="location-trigger-icon">
+                  <svg viewBox="0 0 24 24"><path d="M12 21s-6-5.2-6-11a6 6 0 1112 0c0 5.8-6 11-6 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                </div>
+                <div class="location-trigger-copy">
+                  <div class="location-trigger-label" id="selected-pharmacy-name">Elsie Santé Paris</div>
+                  <div class="location-trigger-sub" id="selected-pharmacy-sub">Paris · Live directory location</div>
+                </div>
+              </div>
+              <span class="location-trigger-arrow">
+                <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              </span>
+            </button>
+
+            <div class="location-panel" id="location-panel">
+              <input
+                class="location-search"
+                id="pharmacy-search"
+                type="text"
+                placeholder="Search Elsie locations"
+                oninput="renderPharmacyOptions(this.value)"
+              />
+              <div class="location-panel-meta">
+                <span id="pharmacy-count">25 official Elsie locations</span>
+                <span class="location-chip">Map dropdown</span>
+              </div>
+              <div class="location-list" id="pharmacy-options"></div>
+              <div class="map-placeholder">
+                <div class="map-grid"></div>
+                <div id="pharmacy-map-pins"></div>
+                <div class="map-caption">
+                  <div class="map-caption-title" id="map-caption-title">Paris</div>
+                  <div class="map-caption-sub">Selected pickup pharmacy</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="goTo('screen-pickup')">
+          Confirm & Prepare Pickup
+          <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-item" onclick="goTo('screen-upload')">
+          <svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="goTo('screen-profile')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span>Profile</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 3: PICKUP PASS -->
+    <div class="screen" id="screen-pickup">
+      <div class="status-bar">
+        <span>9:46</span>
+        <span style="display:flex;gap:5px;align-items:center;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="7" width="4" height="17" rx="1"/><rect x="7" y="4" width="4" height="20" rx="1" opacity=".7"/><rect x="13" y="1" width="4" height="23" rx="1" opacity=".4"/></svg>
+          <svg width="24" height="12" viewBox="0 0 24 12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2" stroke="currentColor" stroke-width="1" fill="none"/><rect x="1.5" y="2.5" width="16" height="7" rx="1.5"/><path d="M22 4v4a2 2 0 000-4z"/></svg>
+        </span>
+      </div>
+      <div class="logo-banner">
+        <img src="/Users/oscartrapp/Downloads/Elsie_Logo_RVB.png" alt="Elsie Santé">
+      </div>
+      <div class="step-progress">
+        <div class="step-progress-track">
+          <div class="step-progress-node done">
+            <div class="step-progress-circle">1</div>
+            <div class="step-progress-label">Upload</div>
+          </div>
+          <div class="step-progress-line done"></div>
+          <div class="step-progress-node done">
+            <div class="step-progress-circle">2</div>
+            <div class="step-progress-label">Review</div>
+          </div>
+          <div class="step-progress-line done"></div>
+          <div class="step-progress-node active">
+            <div class="step-progress-circle">3</div>
+            <div class="step-progress-label">Pickup</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <button class="back-btn" onclick="goTo('screen-review')">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          Back
+        </button>
+
+        <div class="success-banner">
+          <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <div class="sb-text">
+            <div class="sb-title">Your order is being prepared</div>
+            <div class="sb-sub">Estimated ready: ~8 minutes</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Choose pickup method</div>
+          <div class="pickup-cards">
+            <div class="pickup-card" id="pc-counter" onclick="selectPickup('counter')">
+              <div class="pc-icon">
+                <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+              </div>
+              <div class="pc-name">Counter</div>
+              <div class="pc-sub">Express desk</div>
+            </div>
+            <div class="pickup-card" id="pc-robot" onclick="selectPickup('robot')">
+              <div class="pc-icon">
+                <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M12 2v4m-4 0h8M7 11V9a5 5 0 0110 0v2"/><circle cx="9" cy="15" r="1" fill="currentColor"/><circle cx="15" cy="15" r="1" fill="currentColor"/></svg>
+              </div>
+              <div class="pc-name">Robot</div>
+              <div class="pc-sub">Auto station</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qr-card" id="qr-section">
+          <div class="qr-title">Your pickup pass</div>
+          <div class="qr-box">
+            <svg width="110" height="110" viewBox="0 0 110 110">
+              <rect x="0" y="0" width="40" height="40" rx="4" fill="#1A2E44"/>
+              <rect x="5" y="5" width="30" height="30" rx="2" fill="white"/>
+              <rect x="10" y="10" width="20" height="20" rx="1" fill="#1A2E44"/>
+              <rect x="70" y="0" width="40" height="40" rx="4" fill="#1A2E44"/>
+              <rect x="75" y="5" width="30" height="30" rx="2" fill="white"/>
+              <rect x="80" y="10" width="20" height="20" rx="1" fill="#1A2E44"/>
+              <rect x="0" y="70" width="40" height="40" rx="4" fill="#1A2E44"/>
+              <rect x="5" y="75" width="30" height="30" rx="2" fill="white"/>
+              <rect x="10" y="80" width="20" height="20" rx="1" fill="#1A2E44"/>
+              <rect x="50" y="0" width="6" height="6" fill="#1A2E44"/>
+              <rect x="58" y="0" width="6" height="6" fill="#1A2E44"/>
+              <rect x="50" y="8" width="6" height="6" fill="#1A2E44"/>
+              <rect x="50" y="50" width="6" height="6" fill="#1A2E44"/>
+              <rect x="58" y="50" width="14" height="6" fill="#1A2E44"/>
+              <rect x="50" y="58" width="14" height="6" fill="#1A2E44"/>
+              <rect x="58" y="66" width="6" height="6" fill="#1A2E44"/>
+              <rect x="66" y="50" width="6" height="6" fill="#1A2E44"/>
+              <rect x="74" y="50" width="6" height="6" fill="#1A2E44"/>
+              <rect x="74" y="58" width="6" height="6" fill="#1A2E44"/>
+              <rect x="74" y="66" width="6" height="6" fill="#1A2E44"/>
+              <rect x="82" y="50" width="6" height="6" fill="#1A2E44"/>
+              <rect x="90" y="50" width="20" height="6" fill="#1A2E44"/>
+              <rect x="98" y="58" width="12" height="6" fill="#1A2E44"/>
+              <rect x="90" y="66" width="6" height="6" fill="#1A2E44"/>
+              <rect x="50" y="74" width="6" height="36" fill="#1A2E44"/>
+              <rect x="58" y="74" width="6" height="6" fill="#1A2E44"/>
+              <rect x="58" y="82" width="14" height="6" fill="#1A2E44"/>
+              <rect x="66" y="90" width="6" height="6" fill="#1A2E44"/>
+              <rect x="66" y="98" width="6" height="6" fill="#1A2E44"/>
+            </svg>
+          </div>
+          <div class="qr-num">A-214</div>
+          <div class="qr-pharmacy" id="qr-pharmacy-label">Elsie Santé · Rue de Rivoli, Paris 1er</div>
+          <div class="qr-ready">
+            <div class="qr-ready-dot"></div>
+            <span class="qr-ready-text" id="qr-status-text">Ready in ~8 min</span>
+          </div>
+        </div>
+
+        <div class="card pickup-location-card">
+          <div class="card-label">Pickup pharmacy</div>
+          <div class="pickup-location-top">
+            <div>
+              <div class="pickup-location-name" id="pickup-location-name">Elsie Santé Paris</div>
+              <div class="pickup-location-sub" id="pickup-location-sub">Paris · Live directory location</div>
+            </div>
+            <button class="pickup-location-link" onclick="goTo('screen-review')">Change</button>
+          </div>
+          <div class="map-placeholder">
+            <div class="map-grid"></div>
+            <div id="pickup-map-pin"></div>
+            <div class="map-caption">
+              <div class="map-caption-title" id="pickup-map-caption">Paris</div>
+              <div class="map-caption-sub">Directions ready</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Order summary</div>
+          <div class="detail-row"><span class="detail-key">Patient</span><span class="detail-val">Sophie Martin</span></div>
+          <div class="detail-row"><span class="detail-key">Items</span><span class="detail-val">3 medications</span></div>
+          <div class="detail-row"><span class="detail-key">Coverage</span><span class="detail-val" style="color:var(--verified);">Tiers Payant — €0.00</span></div>
+          <div class="detail-row"><span class="detail-key">Method</span><span class="detail-val" id="method-display">—</span></div>
+        </div>
+
+        <button class="btn-directions" onclick="openDirections()">
+          <svg viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          Get Directions to Pharmacy
+        </button>
+
+        <button class="btn-wallet" onclick="openWalletSheet()">
+          <svg class="wallet-apple-icon" viewBox="0 0 814 1000"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-207.1 136.4-316.3 270.5-316.3 36.4 0 107.1 16.5 143.6 16.5 34.7 0 113.4-19.3 154.1-19.3zM549.8 119.1c10.3-21.1 16.5-47.8 16.5-74.5 0-5.8-.6-11.6-1.3-16.5-48.4 1.9-106.4 32.5-142.1 69.5-26 27.3-49 70-49 112.5 0 6.5.6 13 1.3 16.5 3.2.6 8.4 1.3 13.6 1.3 43.4 0 98.3-29.2 161-109.4z"/></svg>
+          Add to Apple Wallet
+        </button>
+
+        <button class="btn-sec" style="width:100%;justify-content:center;margin-top:2px;" onclick="startNewRequest()">
+          <svg viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
+          New Request
+        </button>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-item" onclick="goTo('screen-upload')">
+          <svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="goTo('screen-profile')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span>Profile</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE SCREEN -->
+    <div class="screen" id="screen-profile">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span style="display:flex;gap:5px;align-items:center;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="7" width="4" height="17" rx="1"/><rect x="7" y="4" width="4" height="20" rx="1" opacity=".7"/><rect x="13" y="1" width="4" height="23" rx="1" opacity=".4"/></svg>
+          <svg width="24" height="12" viewBox="0 0 24 12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2" stroke="currentColor" stroke-width="1" fill="none"/><rect x="1.5" y="2.5" width="16" height="7" rx="1.5"/><path d="M22 4v4a2 2 0 000-4z"/></svg>
+        </span>
+      </div>
+      <div class="logo-banner">
+        <img src="/Users/oscartrapp/Downloads/Elsie_Logo_RVB.png" alt="Elsie Santé">
+      </div>
+
+      <div class="content">
+        <button class="back-btn" onclick="goBack()">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          Back
+        </button>
+        <div style="text-align:center;padding:8px 0 20px;">
+          <div class="profile-avatar" style="margin:0 auto 8px;">SM</div>
+          <div style="font-size:18px;font-weight:600;color:var(--midnight);">Sophie Martin</div>
+          <div style="font-size:13px;color:var(--muted);">Member ID: ES-2847361</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Personal information</div>
+          <div class="field-group">
+            <div class="field-label">Full name</div>
+            <input class="field-input" type="text" value="Sophie Martin" />
+          </div>
+          <div class="field-group">
+            <div class="field-label">Date of birth</div>
+            <input class="field-input" type="text" value="14/03/1990" />
+          </div>
+          <div class="field-group">
+            <div class="field-label">Email</div>
+            <input class="field-input" type="email" value="sophie.martin@email.fr" />
+          </div>
+          <div class="field-group" style="margin-bottom:0;">
+            <div class="field-label">Phone</div>
+            <input class="field-input" type="tel" value="+33 6 12 34 56 78" />
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">
+            Sécurité Sociale
+            <span class="badge badge-green">Verified</span>
+          </div>
+          <div class="field-group">
+            <div class="field-label">N° Sécu (15 digits)</div>
+            <input class="field-input" type="text" value="1 90 03 75 056 041 28" />
+          </div>
+          <div class="field-group" style="margin-bottom:0;">
+            <div class="field-label">Carte Vitale number</div>
+            <input class="field-input" type="text" value="2 84 03 75 056 041" />
+          </div>
+          <div style="margin-top:10px;">
+            <button class="btn-sec" style="width:100%;justify-content:center;">
+              <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--green);fill:none;stroke-width:1.8;"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><circle cx="12" cy="13" r="3"/></svg>
+              Scan Carte Vitale
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">
+            Mutuelle / Complémentaire
+            <span class="badge badge-green">Active</span>
+          </div>
+          <div class="field-group">
+            <div class="field-label">Provider</div>
+            <input class="field-input" type="text" value="Alan" />
+          </div>
+          <div class="field-group">
+            <div class="field-label">Contract number</div>
+            <input class="field-input" type="text" value="ALA-2847-FR-9031" />
+          </div>
+          <div class="field-group" style="margin-bottom:0;">
+            <div class="field-label">Coverage start date</div>
+            <input class="field-input" type="text" value="01/01/2024" />
+          </div>
+          <div style="margin-top:10px;">
+            <button class="btn-sec" style="width:100%;justify-content:center;">
+              <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--green);fill:none;stroke-width:1.8;"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              Upload attestation PDF
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Tiers Payant status</div>
+          <div class="tp-status">
+            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <div class="tp-text">
+              <div class="tp-label">Tiers Payant Active</div>
+              <div class="tp-sub">Your prescriptions will be covered at pickup — no upfront payment needed</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="saveProfile()">
+          Save Profile
+          <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+        </button>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-item" onclick="goTo('screen-upload')">
+          <svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span>Home</span>
+        </div>
+        <div class="nav-item active">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span>Profile</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="wallet-toast">
+    <div class="toast-title">Apple Wallet pass prepared</div>
+    <div class="toast-sub" id="wallet-toast-sub">Pickup pass saved for Elsie Santé Paris</div>
+  </div>
+
+  <div class="wallet-overlay" id="wallet-overlay" onclick="closeWalletSheet(event)">
+    <div class="wallet-sheet">
+      <div class="wallet-handle"></div>
+      <div class="wallet-title">Apple Wallet</div>
+      <div class="wallet-pass">
+        <div class="wallet-pass-logo"></div>
+        <div class="wallet-pass-label">Pickup pass</div>
+        <div class="wallet-pass-value" id="wallet-pass-name">Elsie Santé Paris</div>
+        <div class="wallet-pass-meta" id="wallet-pass-meta">A-214 · Ready in ~8 min</div>
+      </div>
+      <div class="wallet-actions">
+        <button class="wallet-action primary" onclick="confirmWalletAdd()">Add Pass</button>
+        <button class="wallet-action secondary" onclick="closeWalletSheet()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const pharmacies = [
+    { id: 'paris', name: 'Elsie Santé Paris', city: 'Paris', subtitle: 'Paris · Live directory location', mapsQuery: 'Elsie Santé Paris', x: 54, y: 38 },
+    { id: 'colombes', name: 'Elsie Santé Colombes', city: 'Colombes', subtitle: 'Colombes · Live directory location', mapsQuery: 'Elsie Santé Colombes', x: 38, y: 30 },
+    { id: 'ermont', name: 'Elsie Santé Ermont', city: 'Ermont', subtitle: 'Ermont · Live directory location', mapsQuery: 'Elsie Santé Ermont', x: 28, y: 24 },
+    { id: 'etampes', name: 'Elsie Santé Etampes', city: 'Etampes', subtitle: 'Etampes · Live directory location', mapsQuery: 'Elsie Santé Etampes', x: 46, y: 68 },
+    { id: 'noisy-le-grand', name: 'Elsie Santé Noisy-le-Grand', city: 'Noisy-le-Grand', subtitle: 'Noisy-le-Grand · Live directory location', mapsQuery: 'Elsie Santé Noisy-le-Grand', x: 74, y: 40 },
+    { id: 'plaisir', name: 'Elsie Santé Plaisir', city: 'Plaisir', subtitle: 'Plaisir · Live directory location', mapsQuery: 'Elsie Santé Plaisir', x: 20, y: 52 },
+    { id: 'meaux', name: 'Elsie Santé Meaux', city: 'Meaux', subtitle: 'Meaux · Live directory location', mapsQuery: 'Elsie Santé Meaux', x: 86, y: 26 },
+    { id: 'stain', name: 'Elsie Santé Stains', city: 'Stains', subtitle: 'Stains · Live directory location', mapsQuery: 'Elsie Santé Stains', x: 62, y: 16 },
+    { id: 'bordeaux', name: 'Elsie Santé Bordeaux', city: 'Bordeaux', subtitle: 'Bordeaux · Live directory location', mapsQuery: 'Elsie Santé Bordeaux', x: 34, y: 74 },
+    { id: 'libourne', name: 'Elsie Santé Libourne', city: 'Libourne', subtitle: 'Libourne · Live directory location', mapsQuery: 'Elsie Santé Libourne', x: 52, y: 70 },
+    { id: 'marmande', name: 'Elsie Santé Marmande', city: 'Marmande', subtitle: 'Marmande · Live directory location', mapsQuery: 'Elsie Santé Marmande', x: 28, y: 84 },
+    { id: 'marseille', name: 'Elsie Santé Marseille', city: 'Marseille', subtitle: 'Marseille · Live directory location', mapsQuery: 'Elsie Santé Marseille', x: 68, y: 78 },
+    { id: 'frejus', name: 'Elsie Santé Fréjus', city: 'Fréjus', subtitle: 'Fréjus · Live directory location', mapsQuery: 'Elsie Santé Fréjus', x: 84, y: 74 },
+    { id: 'hyeres', name: 'Elsie Santé Hyères', city: 'Hyères', subtitle: 'Hyères · Live directory location', mapsQuery: 'Elsie Santé Hyères', x: 78, y: 88 },
+    { id: 'le-cannet', name: 'Elsie Santé Le Cannet', city: 'Le Cannet', subtitle: 'Le Cannet · Live directory location', mapsQuery: 'Elsie Santé Le Cannet', x: 92, y: 82 },
+    { id: 'millau', name: 'Elsie Santé Millau', city: 'Millau', subtitle: 'Millau · Live directory location', mapsQuery: 'Elsie Santé Millau', x: 52, y: 72 },
+    { id: 'dijon', name: 'Elsie Santé Dijon', city: 'Dijon', subtitle: 'Dijon · Live directory location', mapsQuery: 'Elsie Santé Dijon', x: 58, y: 34 },
+    { id: 'colmar', name: 'Elsie Santé Colmar', city: 'Colmar', subtitle: 'Colmar · Live directory location', mapsQuery: 'Elsie Santé Colmar', x: 84, y: 26 },
+    { id: 'fameck', name: 'Elsie Santé Fameck', city: 'Fameck', subtitle: 'Fameck · Live directory location', mapsQuery: 'Elsie Santé Fameck', x: 74, y: 10 },
+    { id: 'vannes', name: 'Elsie Santé Vannes', city: 'Vannes', subtitle: 'Vannes · Live directory location', mapsQuery: 'Elsie Santé Vannes', x: 12, y: 34 },
+    { id: 'dainville', name: 'Elsie Santé Dainville', city: 'Dainville', subtitle: 'Dainville · Live directory location', mapsQuery: 'Elsie Santé Dainville', x: 36, y: 10 },
+    { id: 'cormelles-le-royal', name: 'Elsie Santé Cormelles-le-Royal', city: 'Cormelles-le-Royal', subtitle: 'Cormelles-le-Royal · Live directory location', mapsQuery: 'Elsie Santé Cormelles-le-Royal', x: 20, y: 18 },
+    { id: 'guichainville', name: 'Elsie Santé Guichainville', city: 'Guichainville', subtitle: 'Guichainville · Live directory location', mapsQuery: 'Elsie Santé Guichainville', x: 18, y: 26 },
+    { id: 'romorantin-lanthenay', name: 'Elsie Santé Romorantin-Lanthenay', city: 'Romorantin-Lanthenay', subtitle: 'Romorantin-Lanthenay · Live directory location', mapsQuery: 'Elsie Santé Romorantin-Lanthenay', x: 36, y: 44 },
+    { id: 'kourou', name: 'Elsie Santé Kourou', city: 'Kourou', subtitle: 'Kourou · Live directory location', mapsQuery: 'Elsie Santé Kourou', x: 90, y: 48 }
+  ];
+
+  let prevScreen = 'screen-upload';
+  let urgentActive = false;
+  let fileUploaded = false;
+  let selectedPickup = null;
+  let selectedPharmacyId = 'paris';
+
+  function getSelectedPharmacy() {
+    return pharmacies.find(pharmacy => pharmacy.id === selectedPharmacyId) || pharmacies[0];
+  }
+
+  function pharmacyPin(pharmacy, compact) {
+    return `
+      <div class="map-pin" style="left: calc(${pharmacy.x}% - 12px); top: calc(${pharmacy.y}% - 12px);">
+        <div class="map-pin-circle" style="${compact ? 'width:20px;height:20px;' : ''}">
+          <svg viewBox="0 0 24 24"><path d="M12 21s-6-5.2-6-11a6 6 0 1112 0c0 5.8-6 11-6 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        </div>
+        ${compact ? '' : `<div class="map-label">${pharmacy.city}</div>`}
+      </div>
+    `;
+  }
+
+  function syncPharmacyUI() {
+    const pharmacy = getSelectedPharmacy();
+    document.getElementById('selected-pharmacy-name').textContent = pharmacy.name;
+    document.getElementById('selected-pharmacy-sub').textContent = pharmacy.subtitle;
+    document.getElementById('qr-pharmacy-label').textContent = `${pharmacy.name} · ${pharmacy.city}`;
+    document.getElementById('pickup-location-name').textContent = pharmacy.name;
+    document.getElementById('pickup-location-sub').textContent = pharmacy.subtitle;
+    document.getElementById('map-caption-title').textContent = pharmacy.city;
+    document.getElementById('pickup-map-caption').textContent = pharmacy.city;
+    document.getElementById('wallet-pass-name').textContent = pharmacy.name;
+    document.getElementById('wallet-pass-meta').textContent = `A-214 · ${document.getElementById('qr-status-text').textContent}`;
+    document.getElementById('wallet-toast-sub').textContent = `Pickup pass saved for ${pharmacy.name}`;
+    document.getElementById('pharmacy-map-pins').innerHTML = pharmacies.slice(0, 6).map(item => pharmacyPin(item, item.id !== pharmacy.id)).join('');
+    document.getElementById('pickup-map-pin').innerHTML = pharmacyPin(pharmacy, false);
+  }
+
+  function renderPharmacyOptions(query = '') {
+    const normalized = query.trim().toLowerCase();
+    const matches = pharmacies.filter(pharmacy =>
+      pharmacy.name.toLowerCase().includes(normalized) ||
+      pharmacy.city.toLowerCase().includes(normalized)
+    );
+    document.getElementById('pharmacy-count').textContent = `${matches.length} official Elsie locations`;
+    const markup = matches.length
+      ? matches.map(pharmacy => `
+          <button class="location-option ${pharmacy.id === selectedPharmacyId ? 'selected' : ''}" onclick="selectPharmacy('${pharmacy.id}')">
+            <div class="location-option-pin">
+              <svg viewBox="0 0 24 24"><path d="M12 21s-6-5.2-6-11a6 6 0 1112 0c0 5.8-6 11-6 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            </div>
+            <div class="location-option-copy">
+              <div class="location-option-name">${pharmacy.name}</div>
+              <div class="location-option-sub">${pharmacy.subtitle}</div>
+            </div>
+          </button>
+        `).join('')
+      : '<div class="location-empty">No Elsie locations match that search yet.</div>';
+    document.getElementById('pharmacy-options').innerHTML = markup;
+    syncPharmacyUI();
+  }
+
+  function togglePharmacyPicker(forceOpen) {
+    const panel = document.getElementById('location-panel');
+    const trigger = document.getElementById('location-trigger');
+    const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !panel.classList.contains('open');
+    panel.classList.toggle('open', shouldOpen);
+    trigger.classList.toggle('open', shouldOpen);
+    if (shouldOpen) document.getElementById('pharmacy-search').focus();
+  }
+
+  function selectPharmacy(id) {
+    selectedPharmacyId = id;
+    renderPharmacyOptions(document.getElementById('pharmacy-search').value);
+    togglePharmacyPicker(false);
+  }
+
+  function openDirections() {
+    const pharmacy = getSelectedPharmacy();
+    window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pharmacy.mapsQuery)}`, '_blank');
+  }
+
+  function openWalletSheet() {
+    syncPharmacyUI();
+    document.getElementById('wallet-overlay').classList.add('open');
+  }
+
+  function closeWalletSheet(event) {
+    if (event && event.target !== document.getElementById('wallet-overlay')) return;
+    document.getElementById('wallet-overlay').classList.remove('open');
+  }
+
+  function confirmWalletAdd() {
+    closeWalletSheet();
+    const toast = document.getElementById('wallet-toast');
+    toast.classList.add('show');
+    clearTimeout(confirmWalletAdd.timer);
+    confirmWalletAdd.timer = setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  function goTo(id) {
+    const screens = document.querySelectorAll('.screen');
+    const current = document.querySelector('.screen.active');
+    if (current) prevScreen = current.id;
+    screens.forEach(s => s.classList.remove('active'));
+    const next = document.getElementById(id);
+    next.classList.add('active');
+    next.classList.remove('screen-anim');
+    void next.offsetWidth;
+    next.classList.add('screen-anim');
+    next.querySelector('.content') && (next.querySelector('.content').scrollTop = 0);
+    togglePharmacyPicker(false);
+    closeWalletSheet();
+  }
+
+  function goBack() { goTo(prevScreen); }
+
+  function toggleUrgent() {
+    urgentActive = !urgentActive;
+    document.getElementById('urgent-toggle').classList.toggle('active', urgentActive);
+  }
+
+  function simulateUpload() {
+    if (fileUploaded) return;
+    fileUploaded = true;
+    const zone = document.getElementById('upload-zone');
+    const title = document.getElementById('upload-title');
+    const sub = document.getElementById('upload-sub');
+    const preview = document.getElementById('file-preview-wrap');
+    const btn = document.getElementById('continue-btn');
+    zone.classList.add('has-file');
+    title.textContent = 'Prescription uploaded';
+    sub.textContent = 'ordonnance_doc_31.pdf · 248 KB';
+    preview.style.display = 'block';
+    btn.disabled = false;
+  }
+
+  function selectPickup(type) {
+    selectedPickup = type;
+    document.getElementById('pc-counter').classList.toggle('selected', type === 'counter');
+    document.getElementById('pc-robot').classList.toggle('selected', type === 'robot');
+    const label = type === 'counter' ? 'Express Counter' : 'Dispensing Robot';
+    document.getElementById('method-display').textContent = label;
+    const statusText = document.getElementById('qr-status-text');
+    statusText.textContent = type === 'robot' ? 'Ready now' : 'Ready in ~8 min';
+    syncPharmacyUI();
+  }
+
+  function saveProfile() {
+    const btn = document.querySelector('#screen-profile .btn-primary');
+    btn.textContent = 'Saved!';
+    btn.style.background = '#256040';
+    setTimeout(() => {
+      btn.innerHTML = 'Save Profile <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:white;fill:none;stroke-width:2;"><path d="M5 13l4 4L19 7"/></svg>';
+      btn.style.background = '';
+      goBack();
+    }, 1000);
+  }
+
+  function startNewRequest() {
+    fileUploaded = false;
+    selectedPickup = null;
+    selectedPharmacyId = 'paris';
+    const zone = document.getElementById('upload-zone');
+    zone.classList.remove('has-file');
+    document.getElementById('upload-title').textContent = 'Scan or upload prescription';
+    document.getElementById('upload-sub').textContent = 'Tap to take a photo or choose from your files';
+    document.getElementById('file-preview-wrap').style.display = 'none';
+    document.getElementById('continue-btn').disabled = true;
+    document.getElementById('urgent-toggle').classList.remove('active');
+    urgentActive = false;
+    document.getElementById('pc-counter').classList.remove('selected');
+    document.getElementById('pc-robot').classList.remove('selected');
+    document.getElementById('method-display').textContent = '—';
+    document.getElementById('pharmacy-search').value = '';
+    renderPharmacyOptions();
+    goTo('screen-upload');
+  }
+
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('.location-picker')) togglePharmacyPicker(false);
+  });
+
+  renderPharmacyOptions();
+  selectPickup('robot');
+</script>
