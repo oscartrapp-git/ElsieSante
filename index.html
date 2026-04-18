@@ -720,9 +720,9 @@
             Your details
             <span class="edit-link" onclick="goTo('screen-profile')">Edit</span>
           </div>
-          <div class="detail-row"><span class="detail-key">Name</span><span class="detail-val">Sophie Martin</span></div>
+          <div class="detail-row"><span class="detail-key">Name</span><span class="detail-val" id="review-name">Sophie Martin</span></div>
           <div class="detail-row"><span class="detail-key">Date of birth</span><span class="detail-val">14 Mar 1990</span></div>
-          <div class="detail-row"><span class="detail-key">Member ID</span><span class="detail-val">ES-2847361</span></div>
+          <div class="detail-row"><span class="detail-key">Member ID</span><span class="detail-val" id="review-member-id">ES-2847361</span></div>
         </div>
 
         <div class="card">
@@ -961,7 +961,7 @@
 
         <div class="card">
           <div class="card-label">Order summary</div>
-          <div class="detail-row"><span class="detail-key">Patient</span><span class="detail-val">Sophie Martin</span></div>
+          <div class="detail-row"><span class="detail-key">Patient</span><span class="detail-val" id="pickup-patient-name">Sophie Martin</span></div>
           <div class="detail-row"><span class="detail-key">Items</span><span class="detail-val">3 medications</span></div>
           <div class="detail-row"><span class="detail-key">Coverage</span><span class="detail-val" style="color:var(--verified);">Tiers Payant — €0.00</span></div>
           <div class="detail-row"><span class="detail-key">Method</span><span class="detail-val" id="method-display">—</span></div>
@@ -1014,28 +1014,28 @@
           Back
         </button>
         <div style="text-align:center;padding:8px 0 20px;">
-          <div class="profile-avatar" style="margin:0 auto 8px;">SM</div>
-          <div style="font-size:18px;font-weight:600;color:var(--midnight);">Sophie Martin</div>
-          <div style="font-size:13px;color:var(--muted);">Member ID: ES-2847361</div>
+          <div class="profile-avatar" id="profile-avatar" style="margin:0 auto 8px;">SM</div>
+          <div id="profile-display-name" style="font-size:18px;font-weight:600;color:var(--midnight);">Sophie Martin</div>
+          <div id="profile-display-member-id" style="font-size:13px;color:var(--muted);">Member ID: ES-2847361</div>
         </div>
 
         <div class="card">
           <div class="card-label">Personal information</div>
           <div class="field-group">
             <div class="field-label">Full name</div>
-            <input class="field-input" type="text" value="Sophie Martin" />
+            <input class="field-input" id="profile-name-input" type="text" value="Sophie Martin" />
           </div>
           <div class="field-group">
             <div class="field-label">Date of birth</div>
-            <input class="field-input" type="text" value="14/03/1990" />
+            <input class="field-input" id="profile-dob-input" type="text" value="14/03/1990" />
           </div>
           <div class="field-group">
             <div class="field-label">Email</div>
-            <input class="field-input" type="email" value="sophie.martin@email.fr" />
+            <input class="field-input" id="profile-email-input" type="email" value="sophie.martin@email.fr" />
           </div>
           <div class="field-group" style="margin-bottom:0;">
             <div class="field-label">Phone</div>
-            <input class="field-input" type="tel" value="+33 6 12 34 56 78" />
+            <input class="field-input" id="profile-phone-input" type="tel" value="+33 6 12 34 56 78" />
           </div>
         </div>
 
@@ -1046,7 +1046,7 @@
           </div>
           <div class="field-group">
             <div class="field-label">N° Sécu (15 digits)</div>
-            <input class="field-input" type="text" value="1 90 03 75 056 041 28" />
+            <input class="field-input" id="profile-member-id-input" type="text" value="1 90 03 75 056 041 28" />
           </div>
           <div class="field-group" style="margin-bottom:0;">
             <div class="field-label">Carte Vitale number</div>
@@ -1173,6 +1173,32 @@
   let fileUploaded = false;
   let selectedPickup = null;
   let selectedPharmacyId = 'paris';
+  const profileState = {
+    fullName: 'Sophie Martin',
+    dateOfBirth: '14 Mar 1990',
+    memberId: 'ES-2847361',
+    email: 'sophie.martin@email.fr',
+    phone: '+33 6 12 34 56 78'
+  };
+
+  function getInitials(name) {
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    return (parts[0]?.[0] || '') + (parts[1]?.[0] || parts[0]?.[1] || '');
+  }
+
+  function formatMemberId(rawValue) {
+    const trimmed = rawValue.trim();
+    return trimmed ? trimmed : '—';
+  }
+
+  function syncProfileUI() {
+    document.getElementById('profile-avatar').textContent = getInitials(profileState.fullName).toUpperCase() || 'ES';
+    document.getElementById('profile-display-name').textContent = profileState.fullName;
+    document.getElementById('profile-display-member-id').textContent = `Member ID: ${profileState.memberId}`;
+    document.getElementById('review-name').textContent = profileState.fullName;
+    document.getElementById('review-member-id').textContent = profileState.memberId;
+    document.getElementById('pickup-patient-name').textContent = profileState.fullName;
+  }
 
   function getSelectedPharmacy() {
     return pharmacies.find(pharmacy => pharmacy.id === selectedPharmacyId) || pharmacies[0];
@@ -1316,6 +1342,12 @@
   }
 
   function saveProfile() {
+    profileState.fullName = document.getElementById('profile-name-input').value.trim() || 'Unnamed profile';
+    profileState.dateOfBirth = document.getElementById('profile-dob-input').value.trim() || profileState.dateOfBirth;
+    profileState.email = document.getElementById('profile-email-input').value.trim() || profileState.email;
+    profileState.phone = document.getElementById('profile-phone-input').value.trim() || profileState.phone;
+    profileState.memberId = formatMemberId(document.getElementById('profile-member-id-input').value);
+    syncProfileUI();
     const btn = document.querySelector('#screen-profile .btn-primary');
     btn.textContent = 'Saved!';
     btn.style.background = '#256040';
@@ -1350,6 +1382,7 @@
     if (!event.target.closest('.location-picker')) togglePharmacyPicker(false);
   });
 
+  syncProfileUI();
   renderPharmacyOptions();
   selectPickup('robot');
 </script>
